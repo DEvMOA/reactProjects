@@ -4,6 +4,7 @@ import { FaTrash } from "react-icons/fa";
 export function ToDo() {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
+    const [filter, setFilter] = useState("all");
 
     const addTask = () => {
         if (newTask.trim() === "") return;
@@ -40,12 +41,27 @@ export function ToDo() {
         setTasks(newTasks);
     };
 
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    };
+
+    const filteredTasks = tasks.filter(task => 
+        filter === "all" || 
+        (filter === "completed" && task.completed) || 
+        (filter === "incomplete" && !task.completed)
+    );
+
     return (
         <>
             <div className="text-center">
                 <h1 className="h1 mb-4">TODO APP</h1>
                 <div className="container">
                     <div className="input-group mb-3">
+                        <select onChange={handleFilterChange} className="form-select me-2">
+                            <option value="all">Toutes les tâches</option>
+                            <option value="completed">Tâches complètes</option>
+                            <option value="incomplete">Tâches incomplètes</option>
+                        </select>
                         <input
                             type="text"
                             className="form-control"
@@ -60,7 +76,7 @@ export function ToDo() {
                 </div>
                 <div className="container">
                     <ul className="list-unstyled">
-                        {tasks.map((task, index) => (
+                        {filteredTasks.map((task, index) => (
                             <li key={index} className="d-flex align-items-center justify-content-between mb-2">
                                 <span
                                     style={{
